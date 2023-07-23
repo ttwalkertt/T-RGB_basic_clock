@@ -33,3 +33,6 @@ The structure of your new Arduino project is as follows:
 ```
 
 You (main) sketch goes in `src`. This is where `void setup()` and `void loop()` live. Your libraries (dependencies) go into the libraries folder. You can ether copy your libraries here or symlink them. If you have additional documentation, like datasheets for example, they go into the `doc` folder.
+
+# Build, Load, and Run
+The commands in load-run.sh build the application. If the build is successful it will load the code onto the traget SBC. Finally, if all that is successful, it will kick off the serial console to interact with the SBC.
