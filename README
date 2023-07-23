@@ -1,0 +1,28 @@
+```markdown
+# T-RGB Basic Clock
+
+This repository contains code for a simple RGB clock. 
+
+## Description
+
+A brief description of the project. Here you can explain what your project does and what kind of features it provides.
+
+## Getting Started
+
+### Dependencies
+
+Describe any dependencies that must be installed for this software. Examples: Windows 10, Linux, GCC, CMake, etc.
+
+### Installing
+
+Provide step by step series of examples and explanations about how to get a development environment running.
+
+```bash
+# Clone the repository
+git clone https://github.com/ttwalkertt/T-RGB_basic_clock.git
+
+# Navigate into the cloned directory
+cd T-RGB_basic_clock
+
+# Add any additional installation steps here
+
