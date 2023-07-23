@@ -1,1 +1,3 @@
-#define VERBOSE 2
+#define VERBOSE 1
+#include "config.h"
+

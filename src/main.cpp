@@ -5,12 +5,11 @@
 #include "WiFi.h"
 
 const char* ntpServer = "pool.ntp.org";
-const char* ssid = "walker";
+String ssid = "";
 String password = "";
 IPAddress ip; 
 
-#define TIMEZONE -8
-#define getCurrentUnixTime() (time(NULL) + TIMEZONE * 3600)
+#define getCurrentUnixTime() (time(NULL) + MY_TIMEZONE * 3600)
 
 // Function to process the command and its argument
 void processCommand(const String& command, const String& argument) {
@@ -29,7 +28,6 @@ void processCommand(const String& command, const String& argument) {
       current_time = getCurrentUnixTime();
       local_time = localtime(&current_time);
       Serial.printf("The time is: %s", asctime(local_time));
-      
   } else if (command == "pw") {
     // set up wifi
       Serial.println("Setting wifi password: " + argument);
@@ -50,6 +48,8 @@ void processCommand(const String& command, const String& argument) {
         Serial.println(ip);
         Serial.println("Setup NTP.");
         configTime(3600, 3600, ntpServer);   // Configure Timezone and NTP
+      } else {
+        Serial.println("Failed to connect to wifi.");
       }
   } else {
     Serial.println("Invalid command.");
@@ -71,7 +71,6 @@ void handleCommandInput() {
         inputBuffer[i] = tolower(inputBuffer[i]);
       }
 
-
       // Parse the command and argument
       int spaceIndex = inputBuffer.indexOf(' ');
       String command = inputBuffer.substring(0, spaceIndex);
@@ -84,6 +83,7 @@ void handleCommandInput() {
       Serial.println();
       Serial.println("Command Definitions (case-insensitive separated by a space):");
       Serial.println("pw <arg>: Set the password to <arg>.");
+      Serial.println("ssid <arg>: Set the ssid to <arg>.");
       Serial.println("t : report the current time.");
       // Add more command definitions here
 
@@ -114,6 +114,14 @@ void setup() {
   // load your UI etc. (see example https://github.com/fablabnbg/TRGBArduinoSupport/tree/main/examples/ui_example)
   ui_init();
  
+  #if defined(MY_SSID) 
+    ssid = MY_SSID;
+  #endif
+  #if defined(MY_SSID) && defined(MY_PASSWORD)
+        password = MY_PASSWORD;
+        processCommand("pw", password);
+    #endif
+
   Serial.write("Done with setup - now you're alive! \n");
 }
 
