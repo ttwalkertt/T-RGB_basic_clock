@@ -25,11 +25,11 @@ The structure of your new Arduino project is as follows:
 .
 ├── doc                 Aditional documentation file
 ├── libraries           Arduino library files
-├── main                Main sketch file
-│   └── main.ino        Main Arduino sketch
+├── src                 CPP & C
+├── include             Header files
 ├── LICENCE.txt         Licence file
 ├── config.sh           Arduino config file
 └── README.md           Project README file
 ```
 
-You (main) sketch goes in `main/main.ino`. This is where `void setup()` and `void loop()` live. Your libraries (dependencies) go into the libraries folder. You can ether copy your libraries here or symlink them. If you have additional documentation, like datasheets for example, they go into the `doc` folder.
+You (main) sketch goes in `src`. This is where `void setup()` and `void loop()` live. Your libraries (dependencies) go into the libraries folder. You can ether copy your libraries here or symlink them. If you have additional documentation, like datasheets for example, they go into the `doc` folder.
