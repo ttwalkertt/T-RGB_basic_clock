@@ -154,8 +154,10 @@ int  add_sweep(lv_color_t color, float angle_degrees, float length, float offset
     lv_style_set_line_color(&style_line_swp, lv_palette_main(LV_PALETTE_RED));
     lv_style_set_line_rounded(&style_line_swp, false);
     char buf[64];
-    sniprintf(buf, sizeof(buf), "as%d ", next_sweep  );
-    serial_print(buf);
+    if (VERBOSE > 1) {
+        sniprintf(buf, sizeof(buf), "as%d ", next_sweep  );
+        serial_print(buf);
+        }
     new_sweep = (struct sweep_t *) malloc(sizeof(struct sweep_t));
     if (new_sweep  == NULL) {
         serial_print("malloc failed\n") ;
@@ -178,36 +180,40 @@ int  add_sweep(lv_color_t color, float angle_degrees, float length, float offset
 // global sweep array is sweeps[60]
 void delete_sweeps() {
     static size_t last_heap_size = 0;
-    serial_print("delete sweeps ");
+    if (VERBOSE > 1) serial_print("delete sweeps ");
     char buf[64];
     int i;
     for (i = 0; i < 60; i++) {
-        sniprintf(buf, sizeof(buf), "%d ", i);
-        serial_print(buf);
+        if (VERBOSE > 1){
+            sniprintf(buf, sizeof(buf), "%d ", i);
+            serial_print(buf);
+            }
         if (sweeps[i] != NULL) {
             if (sweeps[i]->line != NULL) {
-                serial_print("line not null\n");
+                if (VERBOSE > 1) serial_print("line not null\n");
                 lv_obj_del((lv_obj_t*) sweeps[i]->line);
                 sweeps[i]->line = NULL;
             }
         } else {
-            serial_print("line null ");
+            if (VERBOSE > 1) serial_print("line null ");
             }
         
         if (sweeps[i] != NULL) {
-            serial_print("item not null ");
+            if (VERBOSE > 1) serial_print("item not null ");
             free(sweeps[i]);
             sweeps[i] = NULL;
             } else {
-                serial_print("item null ");    
+                if (VERBOSE > 1) serial_print("item null ");    
             }
-        serial_print("\n");
+        if (VERBOSE > 1) serial_print("\n");
         size_t heap_size = heap_caps_get_free_size(0);
         if (heap_size < last_heap_size) {
             serial_print("heap size is decreasing  ");
             }
-        sniprintf(buf, sizeof(buf), "heap: %zu last: %zu\n", heap_size, last_heap_size);
-        serial_print(buf);
+        if (VERBOSE > 1) {
+            sniprintf(buf, sizeof(buf), "heap: %zu last: %zu\n", heap_size, last_heap_size);
+            serial_print(buf);
+        }
         last_heap_size = heap_size;
     }
 }
@@ -240,13 +246,6 @@ void set_hands(time_t now)
     angle_degrees = (second * 360) / 60;
     calculate_line_endpoints(second_hand_points, second_hand_length, angle_degrees, second_hand_offset);
 
-    if (second == 0) {
-        delete_sweeps();
-        if (VERBOSE > 1) {
-            serial_print("delete sweeps\n");
-            }
-        }
-    add_sweep(lv_palette_main(LV_PALETTE_RED), angle_degrees, second_hand_length, 180);
 
 // debug and bringup code
     if (VERBOSE > 1) {
@@ -264,9 +263,17 @@ void set_hands(time_t now)
     lv_line_set_points(hour_hand, hour_hands_points, 2);  // Set the points
     lv_line_set_points(minute_hand, minute_hand_points, 2);  // Set the points
     lv_line_set_points(second_hand, second_hand_points, 2);  // Set the points
-    
     lv_led_toggle(led1);
-    
+    lv_task_handler();
+
+    if (second == 0) {
+        delete_sweeps();
+        if (VERBOSE > 1) {
+            serial_print("delete sweeps\n");
+            }
+        }
+    if (second % 5 != 0  ) {add_sweep(lv_palette_main(LV_PALETTE_RED), angle_degrees, second_hand_length, 180);}
+
     lv_task_handler();
     
 }
